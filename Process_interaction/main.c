@@ -69,13 +69,15 @@ int main(int argc, char **argv)
         }
 
         if (pid == 0)
-        {
+        {	
+	    // Create message
             int child = getpid();
             msg m;
             m.mtype = mtype;
             int data = i % 7;
             sprintf(m.mtext, "%d", data);
             printf("child process: %d, data to queue: %s\n", child,  m.mtext);
+	    // Send message to queue
             if(msgsnd(msgqid, (void *)&m, SIZE, IPC_NOWAIT))
 	    {
 		perror("msgsnd");
@@ -92,6 +94,7 @@ int main(int argc, char **argv)
     for (int i = 0; i < K; i++)
     {
         msg m;
+	// Receive massage from queue
         if(msgrcv(msgqid, (void *)&m, SIZE, mtype, 0) < 0)
 	{
 		perror("msgrcv");
@@ -100,10 +103,11 @@ int main(int argc, char **argv)
 
         char *data = m.mtext;
         printf("parent process, data from queue: %s\n", data);
+	//put data to the table
         if (!t.contains(&t, data))
             t.put(&t, data);
     }
-
+    // Print table	
     t.print(&t);
     return 0;
 }
