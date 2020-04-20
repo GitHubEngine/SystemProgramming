@@ -50,8 +50,6 @@ int main(int argc, char **argv)
         return errno;
     }
 
-    printf("Argument equals %d\n", K);
-
     // Create message queue
     int msgqid = msgget(0, IPC_CREAT | 0666);
     if (msgqid < 0)
@@ -78,7 +76,7 @@ int main(int argc, char **argv)
             int data = i % 7;
             sprintf(m.mtext, "%d", data);
             printf("child process: %d, data to queue: %s\n", child,  m.mtext);
-            if(msgsnd(msgqid, (void *)&m, strlen(m.mtext) + 1, IPC_NOWAIT))
+            if(msgsnd(msgqid, (void *)&m, SIZE, IPC_NOWAIT))
 	    {
 		perror("msgsnd");
                 exit(errno);
