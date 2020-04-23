@@ -71,12 +71,11 @@ int main(int argc, char **argv)
         if (pid == 0)
         {	
 	    // Create message
-            int child = getpid();
             msg m;
             m.mtype = mtype;
-            int data = i % 7;
+            int data = i % 1;
             sprintf(m.mtext, "%d", data);
-            printf("child process: %d, data to queue: %s\n", child,  m.mtext);
+            printf("child process, data to queue: %s\n", m.mtext);
 	    // Send message to queue
             if(msgsnd(msgqid, (void *)&m, SIZE, IPC_NOWAIT))
 	    {
@@ -109,5 +108,8 @@ int main(int argc, char **argv)
     }
     // Print table	
     t.print(&t);
+
+    // Close message queue
+    msgctl(msgqid, IPC_RMID, NULL);
     return 0;
 }
