@@ -8,23 +8,6 @@
 
 WCHAR info[SIZE];
 
-bool SSESupport()
-{
-	unsigned result = 0;
-	int value = 0x00000001;
-	__asm
-	{
-		mov eax, value
-		cpuid
-		mov result, edx
-	}
-
-
-	result >>= 25;
-	bool sse = result & 1;
-
-	return sse;
-}
 
 DWORD WINAPI TreadFunc(void* args)
 {
@@ -42,7 +25,7 @@ DWORD WINAPI TreadFunc(void* args)
 	int height = DLLMaxHeight();
 	bool sse = DLLSSESupport();
 
-	wsprintf(info, L"Max-height of window: %dpx, SSE support: %s", height, sse ? L"true" : L"false");
+	wsprintf(info, L"Max client height of window: %dpx, SSE support: %s", height, sse ? L"true" : L"false");
 	FreeLibrary(hinstLib);
 	return 0;
 }
@@ -94,10 +77,10 @@ int WINAPI WinMain(HINSTANCE hThisInst, HINSTANCE hPrevInst, LPSTR str, int nWin
 
 	HWND hWnd = CreateWindow(
 		L"MainWindow",
-		L"Window max-height and SSE",
-		WS_OVERLAPPEDWINDOW,
+		L"Window max client height and SSE",
+		WS_OVERLAPPED | WS_SYSMENU,
 		400, 400,
-		700, 80,
+		400, 80,
 		HWND_DESKTOP,
 		NULL,
 		hThisInst,
